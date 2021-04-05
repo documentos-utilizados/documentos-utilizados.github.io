@@ -1,0 +1,130 @@
+M.	MODELO FÍSICO DO BANCO DE DADOS
+– —————————————————– AREA
+– —————————————————– CREATE TABLE ‘area‘ (
+‘id_area‘ INT(11) NOT NULL AUTO_INCREMENT, ‘descricao‘ VARCHAR(80) NULL DEFAULT NULL,
+PRIMARY KEY (‘id_area‘)) ENGINE = InnoDB AUTO_INCREMENT = 58
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	REVISTA
+– —————————————————– CREATE TABLE IF NOT EXISTS ‘revista‘ ( ‘issn‘ VARCHAR(20) NOT NULL,
+‘titulo‘ VARCHAR(200) NOT NULL, PRIMARY KEY (‘issn‘))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	AREA_HAS_REVISTA
+ 
+FOREIGN KEY (‘revista_issn‘) REFERENCES ‘mbyp‘.‘revista‘ (‘issn‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	PALAVRAS
+– —————————————————– CREATE TABLE IF NOT EXISTS ‘palavras‘ (
+‘id_palavras‘ VARCHAR(20) NOT NULL, PRIMARY KEY (‘id_palavras‘)) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	ARTIGOS_HAS_PALAVRAS
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘artigos_has_palavras‘ ( ‘artigos_id_artigos‘ INT(11) NOT NULL, ‘palavras_id_palavras‘ VARCHAR(20) NOT NULL, ‘quantidade‘ VARCHAR(45) NULL DEFAULT NULL,
+PRIMARY KEY (‘artigos_id_artigos‘, ‘palavras_id_palavras‘),
+ 
+–	—————————————————–	INDEX ‘fk_artigos_has_palavras_palavras1_idx‘ (‘palavras_id_palavra
+ 
+CREATE TABLE IF NOT EXISTS ‘area_has_revista‘ ( ‘area_id_area‘ INT(11) NOT NULL,
+‘revista_issn‘ VARCHAR(20) NOT NULL, PRIMARY KEY (‘area_id_area‘, ‘revista_issn‘),
+INDEX ‘fk_area_has_revista_revista1_idx‘ (‘revista_issn‘ ASC) VISIBLE,
+INDEX ‘fk_area_has_revista_area_idx‘ (‘area_id_area‘ ASC) VISIBLE,
+CONSTRAINT ‘fk_area_has_revista_area‘ FOREIGN KEY (‘area_id_area‘) REFERENCES ‘mbyp‘.‘area‘ (‘id_area‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT ‘fk_area_has_revista_revista1‘ FOREIGN KEY (‘revista_issn‘) REFERENCES ‘mbyp‘.‘revista‘ (‘issn‘)
+ON DELETE NO ACTION ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	ARTIGOS
+– —————————————————– CREATE TABLE IF NOT EXISTS ‘artigos‘ (
+‘id_artigos‘ INT(11) NOT NULL,
+‘data_publicacao‘ VARCHAR(10) NULL DEFAULT NULL, ‘local_armazenamento‘ VARCHAR(100) NULL DEFAULT NULL,
+‘revista_issn‘ VARCHAR(20) NOT NULL, PRIMARY KEY (‘id_artigos‘),
+INDEX ‘fk_artigos_revista1_idx‘ (‘revista_issn‘ ASC) VISI- BLE,
+CONSTRAINT ‘fk_artigos_revista1‘
+ 
+ASC) VISIBLE,
+INDEX ‘fk_artigos_has_palavras_artigos1_idx‘ (‘artigos_id_artigos‘ ASC) VISIBLE,
+CONSTRAINT ‘fk_artigos_has_palavras_artigos1‘ FOREIGN KEY (‘artigos_id_artigos‘) REFERENCES ‘mbyp‘.‘artigos‘ (‘id_artigos‘)
+ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT ‘fk_artigos_has_palavras_palavras1‘ FOREIGN KEY (‘palavras_id_palavras‘) REFERENCES ‘mbyp‘.‘palavras‘ (‘id_palavras‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	CLASSIFICAÇÃO
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘classificacao‘ ( ‘id_classificacao‘ VARCHAR(5) NOT NULL, PRIMARY KEY (‘id_classificacao‘))
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	PERIODO
+– —————————————————– CREATE TABLE IF NOT EXISTS ‘periodo‘ (
+‘id_periodo‘ INT(11) NOT NULL AUTO_INCREMENT, ‘descricao‘ VARCHAR(45) NOT NULL,
+‘data_inicio‘ DATE NOT NULL, ‘data_fim‘ DATE NOT NULL, PRIMARY KEY (‘id_periodo‘)) ENGINE = InnoDB
+ 
+
+ 
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	CLASSIFICACAO_HAS_PERIODO
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘classificacao_has_periodo‘ (
+‘classificacao_id_classificacao‘ VARCHAR(5) NOT NULL, ‘periodo_id_periodo‘ INT(11) NOT NULL,
+PRIMARY KEY (‘classificacao_id_classificacao‘, ‘peri- odo_id_periodo‘),
+INDEX ‘fk_classificacao_has_periodo_periodo1_idx‘ (‘peri- odo_id_periodo‘ ASC) VISIBLE,
+INDEX ‘fk_classificacao_has_periodo_classificacao1_idx‘ (‘classificacao_id_classificacao‘ ASC) VISIBLE, CONSTRAINT ‘fk_classificacao_has_periodo_classificacao1‘ FOREIGN KEY (‘classificacao_id_classificacao‘) REFERENCES ‘mbyp‘.‘classificacao‘ (‘id_classificacao‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT ‘fk_classificacao_has_periodo_periodo1‘ FOREIGN KEY (‘periodo_id_periodo‘)
+REFERENCES ‘mbyp‘.‘periodo‘ (‘id_periodo‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	PALAVRAS_HAS_REVISTA
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘palavras_has_revista‘ ( ‘palavras_id_palavras‘ VARCHAR(20) NOT NULL, ‘revista_issn‘ VARCHAR(20) NOT NULL,
+‘atributos‘ VARCHAR(45) NULL DEFAULT NULL,
+PRIMARY KEY (‘palavras_id_palavras‘, ‘revista_issn‘), INDEX ‘fk_palavras_has_revista_revista1_idx‘ (‘revista_issn‘ ASC) VISIBLE,
+ 
+‘area_has_revista_revista_issn‘ VARCHAR(20) NOT NULL, ‘classificacao_has_periodo_classificacao_id_classificacao‘ VARCHAR(5) NOT NULL,
+‘classificacao_has_periodo_periodo_id_periodo‘	INT(11) NOT NULL,
+PRIMARY KEY (‘area_has_revista_area_id_area‘, ‘area_has_revista_r ‘classificacao_has_periodo_classificacao_id_classificacao‘, ‘classificacao_has_periodo_periodo_id_periodo‘),
+INDEX ‘fk_qualis_classificacao_has_periodo1_idx‘ (‘clas- sificacao_has_periodo_classificacao_id_classificacao‘ ASC, ‘classificacao_has_periodo_periodo_id_periodo‘ ASC) VISI- BLE,
+CONSTRAINT ‘fk_qualis_area_has_revista1‘
+FOREIGN KEY (‘area_has_revista_area_id_area‘ , ‘area_has_revista_r REFERENCES ‘mbyp‘.‘area_has_revista‘ (‘area_id_area‘ , ‘revista_issn‘)
+ON DELETE NO ACTION ON UPDATE NO ACTION,
+CONSTRAINT ‘fk_qualis_classificacao_has_periodo1‘
+FOREIGN KEY (‘classificacao_has_periodo_classificacao_id_classific
+, ‘classificacao_has_periodo_periodo_id_periodo‘) REFERENCES ‘mbyp‘.‘classificacao_has_periodo‘ (‘classifi- cacao_id_classificacao‘ , ‘periodo_id_periodo‘)
+ON DELETE NO ACTION ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	TCA_DUPLICADOS
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘tca_duplicados‘ ( ‘issn‘ VARCHAR(20) NULL DEFAULT NULL, ‘titulo‘ VARCHAR(200) NULL DEFAULT NULL, ‘AREA‘ INT(11) NULL DEFAULT NULL,
+‘PERI‘ INT(11) NULL DEFAULT NULL, ‘CLASS‘ VARCHAR(5) NULL DEFAULT NULL, ‘evento‘ VARCHAR(20) NULL DEFAULT NULL)
+ 
+INDEX ‘fk_palavras_has_revista_palavras1_idx‘ (‘palavras_id_palEavNraGsI‘NE = InnoDB
+ 
+ASC) VISIBLE,
+CONSTRAINT ‘fk_palavras_has_revista_palavras1‘ FOREIGN KEY (‘palavras_id_palavras‘) REFERENCES ‘mbyp‘.‘palavras‘ (‘id_palavras‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION,
+CONSTRAINT ‘fk_palavras_has_revista_revista1‘ FOREIGN KEY (‘revista_issn‘)
+REFERENCES ‘mbyp‘.‘revista‘ (‘issn‘) ON DELETE NO ACTION
+ON UPDATE NO ACTION) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	QUALIS
+– —————————————————– CREATE TABLE IF NOT EXISTS ‘qualis‘ (
+‘area_has_revista_area_id_area‘ INT(11) NOT NULL,
+ 
+DEFAULT CHARACTER SET = utf8mb4;
+– —————————————————–
+–	TCA_IMPRECISOS
+– —————————————————–
+CREATE TABLE IF NOT EXISTS ‘tca_imprecisos‘ ( ‘issn‘ VARCHAR(20) NULL DEFAULT NULL, ‘titulo‘ VARCHAR(200) NULL DEFAULT NULL, ‘AREA‘ VARCHAR(100) NULL DEFAULT NULL, ‘PERI‘ VARCHAR(15) NULL DEFAULT NULL, ‘CLASS‘ VARCHAR(5) NULL DEFAULT NULL) ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
